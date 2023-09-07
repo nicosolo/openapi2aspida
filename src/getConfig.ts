@@ -15,9 +15,9 @@ export type ConfigFile = AspidaConfig & {
     inputFile: string;
     yaml?: boolean;
     outputDir?: string;
-    keepDateObject?: boolean;
-    typesNamespace?: string;
   };
+  keepDateObject?: boolean;
+  typesNamespace?: string;
 };
 
 const createConfig = (config: ConfigFile): Config => {
@@ -29,8 +29,8 @@ const createConfig = (config: ConfigFile): Config => {
     outputEachDir: config.outputEachDir,
     outputMode: config.outputMode,
     isYaml: openapi.yaml ?? !openapi.inputFile.endsWith('.json'),
-    keepDateObject: !!openapi.keepDateObject,
-    typesNamespace: openapi.typesNamespace || 'Types',
+    keepDateObject: !!config.keepDateObject,
+    typesNamespace: config.typesNamespace || 'Types',
   };
 };
 
