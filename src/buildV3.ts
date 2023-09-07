@@ -397,7 +397,7 @@ export default (openapi: OpenAPIV3.Document, keepDateObject: boolean, typesNames
           ...schemas.map(s => ({
             name: s.name,
             description: s.value.description,
-            text: value2String(s.value, '').replace(/\n {2}/g, '\n'),
+            text: value2String(s.value, '  ').replace(/\n {2}/g, '\n'),
           })),
           ...requestBodies.map(r => ({
             name: r.name,
@@ -405,7 +405,7 @@ export default (openapi: OpenAPIV3.Document, keepDateObject: boolean, typesNames
             text:
               typeof r.value === 'string'
                 ? r.value
-                : value2String(r.value, '').replace(/\n {2}/g, '\n'),
+                : value2String(r.value, '  ').replace(/\n {2}/g, '\n'),
           })),
           ...responses.map(r => ({
             name: r.name,
@@ -413,7 +413,7 @@ export default (openapi: OpenAPIV3.Document, keepDateObject: boolean, typesNames
             text:
               typeof r.value === 'string'
                 ? r.value
-                : value2String(r.value, '').replace(/\n {2}/g, '\n'),
+                : value2String(r.value, '  ').replace(/\n {2}/g, '\n'),
           })),
           ...headers.map(h => ({
             name: h.name,
@@ -421,10 +421,12 @@ export default (openapi: OpenAPIV3.Document, keepDateObject: boolean, typesNames
             text:
               typeof h.value === 'string'
                 ? h.value
-                : value2String(h.value, '').replace(/\n {2}/g, '\n'),
+                : value2String(h.value, '  ').replace(/\n {2}/g, '\n'),
           })),
         ]
-          .map(p => `\n${description2Doc(p.description, '')}export type ${p.name} = ${p.text}\n`)
+          .map(
+            p => `\n${description2Doc(p.description, '  ')}  export type ${p.name} = ${p.text}\n`
+          )
           .join('')
           .replace(new RegExp(`(W)${typesNamespace}.`, 'g'), '$1')
           .replace(/\]\?:/g, ']:')

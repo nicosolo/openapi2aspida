@@ -2,6 +2,6 @@
 export namespace Types {
       
       
-export type InvoiceCategory = 'category-1' | 'category-2'
+  export type InvoiceCategory = 'category-1' | 'category-2'
 
 }
