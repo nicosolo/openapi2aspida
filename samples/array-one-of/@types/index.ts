@@ -1,7 +1,10 @@
 /* eslint-disable */
+export namespace Types {
+      
+      
 export type User = {
   id?: string | undefined
-  roles?: (RoleA | RoleB)[] | undefined
+  roles?: (Types.RoleA | Types.RoleB)[] | undefined
 }
 
 export type RoleA = {
@@ -11,4 +14,6 @@ export type RoleA = {
 export type RoleB = {
   name?: string | undefined
   authority?: string | undefined
+}
+
 }

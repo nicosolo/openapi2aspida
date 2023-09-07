@@ -5,7 +5,12 @@ import { resolveSchemasRef } from './resolvers';
 
 export type Schema = { name: string; value: PropValue };
 
-export default (schemas: OpenAPIV3.ComponentsObject['schemas'], openapi: OpenAPIV3.Document) =>
+export default (
+  schemas: OpenAPIV3.ComponentsObject['schemas'],
+  openapi: OpenAPIV3.Document,
+  keepDateObject: boolean,
+  typesNamespace: string
+) =>
   schemas &&
   Object.keys(schemas)
     .filter(defKey => {
@@ -13,7 +18,7 @@ export default (schemas: OpenAPIV3.ComponentsObject['schemas'], openapi: OpenAPI
       return !(isRefObject(target) ? resolveSchemasRef(openapi, target.$ref) : target).deprecated;
     })
     .map(defKey => {
-      const value = schema2value(schemas[defKey]);
+      const value = schema2value(schemas[defKey], false, keepDateObject, typesNamespace);
       return value ? { name: defKey2defName(defKey), value } : null;
     })
     .filter((v): v is Schema => !!v);

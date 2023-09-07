@@ -1,4 +1,7 @@
 /* eslint-disable */
+export namespace Types {
+      
+      
 export type UserId = {
   /**
    * id of the user for which the methods apply.
@@ -37,7 +40,7 @@ export type Status = {
   status?: string | undefined
 }
 
-export type Offers = Offer[]
+export type Offers = Types.Offer[]
 
 /** Offer object */
 export type Offer = {
@@ -50,14 +53,14 @@ export type Offer = {
   /** Description of the offer. User Friendly field. */
   description: string
   /** List of categories for which the offer applies */
-  categories: OfferCategory[]
+  categories: Types.OfferCategory[]
   /** Time when the offer will be available to the user, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time. */
   start_date?: string | undefined
   /** Time when the offer will expire for the user, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time. */
   end_date?: string | undefined
   /** List of prices for this offer */
-  prices: Price[]
-  product: OfferedProduct
+  prices: Types.Price[]
+  product: Types.OfferedProduct
 }
 
 /** category of offer */
@@ -73,12 +76,12 @@ export type OfferCategory = {
 export type Product = {
   /** Name to be displayed when referring to this product. User Friendly field. */
   display_name: string
-  product_type: ProductType
-  descriptions?: Descriptions | undefined
-  subscription_type?: SubscriptionType | undefined
-  quota?: Quotas | undefined
-  connection?: Connection | undefined
-  packages?: Packages | undefined
+  product_type: Types.ProductType
+  descriptions?: Types.Descriptions | undefined
+  subscription_type?: Types.SubscriptionType | undefined
+  quota?: Types.Quotas | undefined
+  connection?: Types.Connection | undefined
+  packages?: Types.Packages | undefined
   /** list of freely defined strings that tag the product based on some criteria */
   tags?: string[] | undefined
 }
@@ -90,13 +93,13 @@ export type SubscriptionType = 'prepaid' | 'postpaid' | 'control'
 export type ProductType = 'mobile' | 'landline' | 'internet' | 'iptv' | 'bundle' | 'device' | 'voucher' | 'value_added_service' | 'bolt-on' | 'dth'
 
 /** Object that models an offered product */
-export type OfferedProduct = Product & {
+export type OfferedProduct = Types.Product & {
   /** Array of products objects. Only applies for product bundle */
-  sub_products?: OfferedProduct[] | undefined
+  sub_products?: Types.OfferedProduct[] | undefined
 }
 
 /** Object that models a subscribed product */
-export type SubscribedProduct = Product & {
+export type SubscribedProduct = Types.Product & {
   /** Unique identifier of the product */
   id: string
   /** Process state of the product */
@@ -108,46 +111,46 @@ export type SubscribedProduct = Product & {
   /** Time when the product will finalize, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time. */
   end_date?: string | undefined
   /** List of prices for this subscribed product */
-  prices?: Price[] | undefined
+  prices?: Types.Price[] | undefined
   /** Array of products objects. Only applies for product bundle */
-  sub_products?: SubscribedProduct[] | undefined
+  sub_products?: Types.SubscribedProduct[] | undefined
 }
 
 /** It applies for product_type mobile, value_added_service and bolt-on, and provides information on available data, voice and sms quota */
 export type Quotas = {
   /** list of data quotas associated to this product */
-  data?: DataQuota[] | undefined
+  data?: Types.DataQuota[] | undefined
   /** list of voice quotas associated to this product */
-  voice?: VoiceQuota[] | undefined
+  voice?: Types.VoiceQuota[] | undefined
   /** list of SMS quotas associated to this product */
-  sms?: SmsQuota[] | undefined
+  sms?: Types.SmsQuota[] | undefined
 }
 
 export type CommonQuota = {
   /** max units allowed by current quota. -1 is interpreted as there is no limit */
   max: number
-  time_bands?: TimeBand[] | undefined
-  origins?: Origin[] | undefined
+  time_bands?: Types.TimeBand[] | undefined
+  origins?: Types.Origin[] | undefined
 }
 
 /** Data quota information */
-export type DataQuota = CommonQuota & {
+export type DataQuota = Types.CommonQuota & {
   /** Unit used on the quota */
   unit: 'byte' | 'kilobyte' | 'megabyte' | 'gigabyte'
 }
 
 /** Voice quota information */
-export type VoiceQuota = CommonQuota & {
+export type VoiceQuota = Types.CommonQuota & {
   /** Unit used on the quota */
   unit: 'second' | 'minute' | 'hour'
-  destinations?: Destination[] | undefined
+  destinations?: Types.Destination[] | undefined
 }
 
 /** SMS quota information */
-export type SmsQuota = CommonQuota & {
+export type SmsQuota = Types.CommonQuota & {
   /** Unit used on the quota */
   unit: 'message'
-  destinations?: Destination[] | undefined
+  destinations?: Types.Destination[] | undefined
 }
 
 /** Timebands when the quota applies */
@@ -178,7 +181,7 @@ export type Package = {
 }
 
 /** It applies only for product_type iptv and dth; provides information on available TV packages */
-export type Packages = Package[]
+export type Packages = Types.Package[]
 
 /** Information about the product for displaying purposes. */
 export type Description = {
@@ -195,7 +198,7 @@ export type Description = {
   category?: 'general' | 'dates' | 'promotion' | undefined
 }
 
-export type Descriptions = Description[]
+export type Descriptions = Types.Description[]
 
 /** Price information */
 export type Price = {
@@ -213,13 +216,13 @@ export type Price = {
    *  Additional to pre-defined values of day, week, month, year, any indication of number of days or hours is possible, with format {x}-days or {x}-hours (e.g.: 7-days or 24-hours).
    */
   period_duration?: string | undefined
-  amount: External1_MoneyAmount
+  amount: Types.External1_MoneyAmount
   /** porcentage factor of the taxes applied */
   tax: number
 }
 
 /** List of orders */
-export type Orders = Order[]
+export type Orders = Types.Order[]
 
 /** Information related to an order */
 export type Order = {
@@ -235,8 +238,8 @@ export type Order = {
   creation_date: string
   /** type of the order */
   type: 'purchase' | 'unsubscription' | 'update'
-  status: OrderStatus
-  error?: OrderError | undefined
+  status: Types.OrderStatus
+  error?: Types.OrderError | undefined
 }
 
 export type OrderStatus = 'pending' | 'confirmed' | 'rejected'
@@ -263,7 +266,7 @@ export type CreatePurchaseOrderWallet = {
   offer_id: string
   /** user identifer (e.g. phone number) associated to the order */
   identifier?: string | undefined
-  wallet_type: WalletType
+  wallet_type: Types.WalletType
 }
 
 /** Information of what offer has to be used to create the order using invoice has payment method */
@@ -276,7 +279,7 @@ export type CreatePurchaseOrderByPhoneNumberInvoice = {
 export type CreatePurchaseOrderByPhoneNumberWallet = {
   /** Id of the offer related to the new order */
   offer_id: string
-  wallet_type: WalletType
+  wallet_type: Types.WalletType
 }
 
 /** type of the wallet */
@@ -306,32 +309,32 @@ export type External1_QuotaCategory = 'general' | 'promotion' | 'voucher' | 'app
 export type External0_InvalidArgument = {
   /** Client specified an invalid argument, request body or query param. */
   code: 'INVALID_ARGUMENT'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 export type External0_PermissionDenied = {
   /** Client does not have sufficient permissions to perform this action. */
   code: 'PERMISSION_DENIED'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 export type External0_NotFound = {
   /** The specified resource is not found */
   code: 'NOT_FOUND'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 export type External0_AlreadyExists = {
   /** The resource that a client tried to create already exists. */
   code: 'ALREADY_EXISTS'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 export type External0_Internal = {
   /** Unknown server error.Typically a server bug. */
   code: 'INTERNAL'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 export type External0_Timeout = {
   /** Request timeout exceeded */
   code: 'TIMEOUT'
-} & External0_ModelError
+} & Types.External0_ModelError
 
 /** Money amount */
 export type External1_MoneyAmount = {
@@ -341,4 +344,6 @@ export type External1_MoneyAmount = {
   currency: string
   /** true if the amount includes government taxes */
   tax_included?: boolean | undefined
+}
+
 }

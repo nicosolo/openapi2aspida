@@ -24,6 +24,8 @@ export default (configs?: PartialConfig) => {
         outputMode: config.outputMode,
         outputEachDir: config.outputEachDir,
         trailingSlash: config.trailingSlash,
+        keepDateObject: config.keepDateObject || false,
+        typesNamespace: config.typesNamespace || 'Types',
       },
       types,
       files,

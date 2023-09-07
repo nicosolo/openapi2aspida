@@ -1,4 +1,7 @@
 /* eslint-disable */
+export namespace Types {
+      
+      
 export type AppIdHeader = {
   'x-tchop-app-id': string
 }
@@ -102,11 +105,11 @@ export type BaseMixModel = {
   previewUrl: string
   includeInNewsFeed: boolean
   displayItemUpdatedTime?: string | undefined
-  image?: ImageModel | undefined
+  image?: Types.ImageModel | undefined
 }
 
-export type ModelMixV3 = BaseMixModel & {
-  cards: ModelCard[]
+export type ModelMixV3 = Types.BaseMixModel & {
+  cards: Types.ModelCard[]
   itemsNum: number
 }
 
@@ -132,7 +135,7 @@ export type AudioModel = {
 
 export type ModelCard = {
   id: number
-  type: CardEnumModel
+  type: Types.CardEnumModel
   createdByLabel?: string | undefined
   created: string
   postedTime: string
@@ -147,17 +150,17 @@ export type ModelCard = {
   sourceName?: string | undefined
   url?: string | undefined
   abstract?: string | undefined
-  image?: ImageModel | undefined
-  audio?: AudioModel | undefined
-  styles?: CardStyleModel | undefined
-  author?: CardAuthorModel | undefined
+  image?: Types.ImageModel | undefined
+  audio?: Types.AudioModel | undefined
+  styles?: Types.CardStyleModel | undefined
+  author?: Types.CardAuthorModel | undefined
 }
 
 export type CardAuthorModel = {
   type: 'curate-backend' | 'api'
   name: string
   email?: string | undefined
-  image?: ImageModel | undefined
+  image?: Types.ImageModel | undefined
 }
 
 export type ReactionEnumModel = 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry'
@@ -202,4 +205,6 @@ export type ArticleModel = {
   abstract?: string | undefined
   sourceName?: string | undefined
   image?: string | undefined
+}
+
 }

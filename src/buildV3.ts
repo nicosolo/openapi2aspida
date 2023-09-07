@@ -23,13 +23,17 @@ const getParamsList = (
   params?: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[]
 ) => params?.map(p => (isRefObject(p) ? resolveParamsRef(openapi, p.$ref) : p)) || [];
 
-export default (openapi: OpenAPIV3.Document) => {
+export default (openapi: OpenAPIV3.Document, keepDateObject: boolean, typesNamespace: string) => {
   const files: { file: string[]; methods: string }[] = [];
-  const schemas = schemas2Props(openapi.components?.schemas, openapi) || [];
-  const parameters = parameters2Props(openapi.components?.parameters, openapi) || [];
-  const requestBodies = requestBodies2Props(openapi.components?.requestBodies) || [];
-  const responses = responses2Props(openapi.components?.responses) || [];
-  const headers = headers2Props(openapi.components?.headers) || [];
+  const schemas =
+    schemas2Props(openapi.components?.schemas, openapi, keepDateObject, typesNamespace) || [];
+  const parameters =
+    parameters2Props(openapi.components?.parameters, openapi, keepDateObject, typesNamespace) || [];
+  const requestBodies =
+    requestBodies2Props(openapi.components?.requestBodies, keepDateObject, typesNamespace) || [];
+  const responses =
+    responses2Props(openapi.components?.responses, keepDateObject, typesNamespace) || [];
+  const headers = headers2Props(openapi.components?.headers, keepDateObject, typesNamespace) || [];
 
   files.push(
     ...Object.keys(openapi.paths)
@@ -87,7 +91,7 @@ export default (openapi: OpenAPIV3.Document) => {
                       isEnum: false,
                       nullable: false,
                       description: ref.description ?? null,
-                      value: $ref2Type(p.$ref),
+                      value: $ref2Type(p.$ref, typesNamespace),
                     };
 
                     switch (ref.in) {
@@ -102,7 +106,7 @@ export default (openapi: OpenAPIV3.Document) => {
                         break;
                     }
                   } else {
-                    const value = schema2value(p.schema);
+                    const value = schema2value(p.schema, false, keepDateObject, typesNamespace);
                     if (!value) return;
 
                     const prop = {
@@ -200,7 +204,7 @@ export default (openapi: OpenAPIV3.Document) => {
                   ref.content?.[Object.keys(ref.content)[0]];
 
                 if (content?.schema) {
-                  const val = schema2value(content.schema, true);
+                  const val = schema2value(content.schema, true, keepDateObject, typesNamespace);
                   val &&
                     params.push({
                       name: 'resBody',
@@ -229,9 +233,14 @@ export default (openapi: OpenAPIV3.Document) => {
                                   isArray: false,
                                   isEnum: false,
                                   description: null,
-                                  value: $ref2Type(headerData.$ref),
+                                  value: $ref2Type(headerData.$ref, typesNamespace),
                                 }
-                              : schema2value(headerData.schema);
+                              : schema2value(
+                                  headerData.schema,
+                                  false,
+                                  keepDateObject,
+                                  typesNamespace
+                                );
 
                             return (
                               val && {
@@ -273,7 +282,7 @@ export default (openapi: OpenAPIV3.Document) => {
                   isEnum: false,
                   nullable: false,
                   description: null,
-                  value: $ref2Type(target.requestBody.$ref),
+                  value: $ref2Type(target.requestBody.$ref, typesNamespace),
                 };
                 required = ref.required ?? true;
                 description = ref.description ?? null;
@@ -283,13 +292,21 @@ export default (openapi: OpenAPIV3.Document) => {
 
                 if (target.requestBody.content['multipart/form-data']?.schema) {
                   reqFormat = 'FormData';
-                  reqBody = schema2value(target.requestBody.content['multipart/form-data'].schema);
+                  reqBody = schema2value(
+                    target.requestBody.content['multipart/form-data'].schema,
+                    false,
+                    keepDateObject,
+                    typesNamespace
+                  );
                 } else if (
                   target.requestBody.content['application/x-www-form-urlencoded']?.schema
                 ) {
                   reqFormat = 'URLSearchParams';
                   reqBody = schema2value(
-                    target.requestBody.content['application/x-www-form-urlencoded'].schema
+                    target.requestBody.content['application/x-www-form-urlencoded'].schema,
+                    false,
+                    keepDateObject,
+                    typesNamespace
                   );
                 } else {
                   const content =
@@ -298,7 +315,8 @@ export default (openapi: OpenAPIV3.Document) => {
                       key.startsWith('application/')
                     )?.[1];
 
-                  if (content?.schema) reqBody = schema2value(content.schema);
+                  if (content?.schema)
+                    reqBody = schema2value(content.schema, false, keepDateObject, typesNamespace);
                 }
               }
 
@@ -349,7 +367,7 @@ export default (openapi: OpenAPIV3.Document) => {
         if (methods.length) {
           const methodsText = props2String(methods, '');
           const hasBinary = methodsText.includes(BINARY_TYPE);
-          const hasTypes = /( |<)Types\./.test(methodsText);
+          const hasTypes = new RegExp(`( |<)${typesNamespace}.`).test(methodsText);
 
           return {
             file,
@@ -357,7 +375,7 @@ export default (openapi: OpenAPIV3.Document) => {
               hasBinary ? "import type { ReadStream } from 'fs'\n" : ''
             }${hasBinary && !hasTypes ? '\n' : ''}${
               hasTypes
-                ? `import type * as Types from '${file.map(() => '').join('../')}@types'\n\n`
+                ? `import { ${typesNamespace} } from '${file.map(() => '').join('../')}@types'\n\n`
                 : ''
             }export type Methods = ${methodsText}\n`,
           };
@@ -408,7 +426,7 @@ export default (openapi: OpenAPIV3.Document) => {
         ]
           .map(p => `\n${description2Doc(p.description, '')}export type ${p.name} = ${p.text}\n`)
           .join('')
-          .replace(/(\W)Types\./g, '$1')
+          .replace(new RegExp(`(W)${typesNamespace}.`, 'g'), '$1')
           .replace(/\]\?:/g, ']:')
       : null;
 
@@ -417,9 +435,9 @@ export default (openapi: OpenAPIV3.Document) => {
     baseURL: openapi.servers?.[0]?.url || '',
     types:
       typesText &&
-      `/* eslint-disable */${
-        typesText.includes(BINARY_TYPE) ? "\nimport type { ReadStream } from 'fs'\n" : ''
-      }${typesText}`,
+      `/* eslint-disable */\nexport namespace ${typesNamespace} {
+      ${typesText.includes(BINARY_TYPE) ? "\nimport type { ReadStream } from 'fs'\n" : ''}
+      ${typesText}\n}`,
     files,
   };
 };

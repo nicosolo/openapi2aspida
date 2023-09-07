@@ -4,7 +4,11 @@ import type { PropValue } from './props2String';
 
 export type RequestBody = { name: string; value: string | PropValue };
 
-export default (bodies: OpenAPIV3.ComponentsObject['requestBodies']) =>
+export default (
+  bodies: OpenAPIV3.ComponentsObject['requestBodies'],
+  keepDateObject: boolean,
+  typesNamespace: string
+) =>
   bodies &&
   Object.keys(bodies)
     .map(defKey => {
@@ -12,14 +16,14 @@ export default (bodies: OpenAPIV3.ComponentsObject['requestBodies']) =>
       let value: RequestBody['value'];
 
       if (isRefObject(target)) {
-        value = $ref2Type(target.$ref);
+        value = $ref2Type(target.$ref, typesNamespace);
       } else {
         const content =
           target.content &&
           Object.entries(target.content).find(([key]) => key.startsWith('application/'))?.[1];
         if (!content) return null;
 
-        const result = schema2value(content.schema);
+        const result = schema2value(content.schema, false, keepDateObject, typesNamespace);
         if (!result) return null;
 
         value = result;

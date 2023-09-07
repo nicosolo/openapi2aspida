@@ -1,5 +1,5 @@
 /* eslint-disable */
-import type * as Types from '../../../../../../../@types'
+import { Types } from '../../../../../../../@types'
 
 export type Methods = {
   /** Creates an purchase order for an offer by its offer_id using a wallet has payment method */

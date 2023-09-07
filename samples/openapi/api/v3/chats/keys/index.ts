@@ -1,5 +1,5 @@
 /* eslint-disable */
-import type * as Types from '../../../../@types'
+import { Types } from '../../../../@types'
 
 export type Methods = {
   /** Returns valid pubnub keys and auth token, refreshes tokens and access if needed */

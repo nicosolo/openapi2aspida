@@ -1,4 +1,7 @@
 /* eslint-disable */
+export namespace Types {
+      
+      
 export type Category = {
   id?: number | undefined
   name?: string | undefined
@@ -6,10 +9,10 @@ export type Category = {
 
 export type Pet = {
   id?: number | undefined
-  category?: Category | undefined
+  category?: Types.Category | undefined
   name: string
   photoUrls: string[]
-  tags?: Tag[] | undefined
+  tags?: Types.Tag[] | undefined
   /** pet status in the store */
   status?: 'available' | 'pending' | 'sold' | undefined
 }
@@ -45,4 +48,6 @@ export type User = {
   phone?: string | undefined
   /** User Status */
   userStatus?: number | undefined
+}
+
 }

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import type * as Types from '../../@types'
+import { Types } from '../../@types'
 
 export type Methods = {
   /** Multiple status values can be provided with comma separated strings */

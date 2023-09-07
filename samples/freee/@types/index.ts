@@ -1,6 +1,9 @@
 /* eslint-disable */
+export namespace Types {
+      
 import type { ReadStream } from 'fs'
 
+      
 export type PaymentParams = {
   /** 事業所ID */
   company_id: number
@@ -2002,7 +2005,7 @@ export type CompanyResponse = {
     workflow_setting: 'enable' | 'disable'
     /** 取引先コードの利用設定（true: 有効、 false: 無効） */
     use_partner_code: boolean
-    fiscal_years: Fiscal_years[]
+    fiscal_years: Types.Fiscal_years[]
   }
 }
 
@@ -3528,4 +3531,6 @@ export type CompaniesPlanResponse = {
   plan: 'non_charged' | 'starter' | 'standard' | 'premium' | 'minimum' | 'basic' | 'professional' | 'enterprise'
   /** 事業形態（個人事業主: personal、法人: corporate） */
   org_code: 'personal' | 'corporate'
+}
+
 }

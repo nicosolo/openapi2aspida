@@ -6,6 +6,8 @@ export type Config = Pick<AspidaConfig, 'outputEachDir' | 'outputMode' | 'traili
   input: string | OpenAPI.Document;
   output: string;
   isYaml: boolean;
+  keepDateObject?: boolean;
+  typesNamespace?: string;
 };
 
 export type ConfigFile = AspidaConfig & {
@@ -13,6 +15,8 @@ export type ConfigFile = AspidaConfig & {
     inputFile: string;
     yaml?: boolean;
     outputDir?: string;
+    keepDateObject?: boolean;
+    typesNamespace?: string;
   };
 };
 
@@ -25,6 +29,8 @@ const createConfig = (config: ConfigFile): Config => {
     outputEachDir: config.outputEachDir,
     outputMode: config.outputMode,
     isYaml: openapi.yaml ?? !openapi.inputFile.endsWith('.json'),
+    keepDateObject: !!openapi.keepDateObject,
+    typesNamespace: openapi.typesNamespace || 'Types',
   };
 };
 

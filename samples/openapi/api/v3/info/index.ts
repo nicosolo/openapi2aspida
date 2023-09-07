@@ -1,5 +1,5 @@
 /* eslint-disable */
-import type * as Types from '../../../@types'
+import { Types } from '../../../@types'
 
 export type Methods = {
   /** Send in to about app to server. If app is to old and need be force updated in responce you have link to new app */

@@ -1,4 +1,7 @@
 /* eslint-disable */
+export namespace Types {
+      
+      
 export type Users_PermissionsRole = {
   id: string
   name: string
@@ -66,4 +69,6 @@ export type NewUsers_PermissionsUser = {
 export type Error = {
   code: number
   message: string
+}
+
 }

@@ -4,7 +4,11 @@ import type { PropValue } from './props2String';
 
 export type Header = { name: string; value: string | PropValue };
 
-export default (headers: OpenAPIV3.ComponentsObject['headers']) =>
+export default (
+  headers: OpenAPIV3.ComponentsObject['headers'],
+  keepDateObject: boolean,
+  typesNamespace: string
+) =>
   headers &&
   Object.keys(headers)
     .map(defKey => {
@@ -12,9 +16,9 @@ export default (headers: OpenAPIV3.ComponentsObject['headers']) =>
       let value: Header['value'];
 
       if (isRefObject(target)) {
-        value = $ref2Type(target.$ref);
+        value = $ref2Type(target.$ref, typesNamespace);
       } else {
-        const result = schema2value(target.schema);
+        const result = schema2value(target.schema, false, keepDateObject, typesNamespace);
         if (!result) return null;
         value = { ...result, description: target.description ?? null };
       }

@@ -8,7 +8,7 @@ export default ({
   files,
   outputDir,
 }: {
-  config: AspidaConfig;
+  config: AspidaConfig & { keepDateObject: boolean; typesNamespace: string };
   types: string | null;
   files: {
     file: string[];

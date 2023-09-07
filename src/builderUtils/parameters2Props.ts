@@ -11,7 +11,12 @@ import { resolveParamsRef } from './resolvers';
 
 export type Parameter = { name: string; prop: string | Prop };
 
-export default (params: OpenAPIV3.ComponentsObject['parameters'], openapi: OpenAPIV3.Document) =>
+export default (
+  params: OpenAPIV3.ComponentsObject['parameters'],
+  openapi: OpenAPIV3.Document,
+  keepDateObject: boolean,
+  typesNamespace: string
+) =>
   params &&
   Object.keys(params)
     .filter(defKey => {
@@ -23,9 +28,9 @@ export default (params: OpenAPIV3.ComponentsObject['parameters'], openapi: OpenA
       let prop: Parameter['prop'];
 
       if (isRefObject(target)) {
-        prop = $ref2Type(target.$ref);
+        prop = $ref2Type(target.$ref, typesNamespace);
       } else {
-        const value = schema2value(target.schema);
+        const value = schema2value(target.schema, false, keepDateObject, typesNamespace);
         if (!value) return null;
 
         prop = {
