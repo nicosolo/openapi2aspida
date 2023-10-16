@@ -126,6 +126,8 @@ export const schema2value = (
     if (schema.oneOf || schema.allOf || schema.anyOf) {
       hasOf = schema.oneOf ? 'oneOf' : schema.allOf ? 'allOf' : 'anyOf';
       value = of2Values(schema, keepDateObject, typesNamespace);
+    } else if (schema.format === 'date-time' && keepDateObject) {
+      value = 'Date';
     } else if (schema.enum) {
       isEnum = true;
       value = schema.type === 'string' ? schema.enum.map(e => `'${e}'`) : schema.enum;
